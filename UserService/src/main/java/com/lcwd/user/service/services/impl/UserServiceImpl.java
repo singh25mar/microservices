@@ -48,12 +48,12 @@ public class UserServiceImpl implements UserServices{
 	public User getUser(String userId) {
 		// TODO Auto-generated method stub
 		User user = repo.findById(userId).orElseThrow(()-> new UserNotFoundException("OOPS USer Not found") );
-		Rating[]ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/"+user.getUserId(), Rating[].class);
+		Rating[]ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/"+user.getUserId(), Rating[].class);
 		// appling rest template to get data from rating api
 		logger.info("{}",ratingsOfUser);
 		List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
 		List<Rating> ratingList = ratings.stream().map(rating ->{
-			ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://localhost:8082/hotles/"+rating.getHotelId(), Hotel.class);
+			ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotles/"+rating.getHotelId(), Hotel.class);
 			Hotel hotel = forEntity.getBody();
 			logger.info("response status code: {} ",forEntity.getStatusCode());
 			rating.setHotel(hotel);
